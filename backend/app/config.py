@@ -28,14 +28,16 @@ class Config:
     UPLOAD_DIR = os.getenv("UPLOAD_DIR", "./uploads")
     ALLOWED_UPLOAD_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"]
 
-    # CORS
+    # CORS — all local dev ports Expo web may use
     FRONTEND_URLS = [
-    "http://localhost:8082",  # ← ADD THIS (Expo web)
-    "http://localhost:19006",
-    "http://localhost:3000",
-    "http://127.0.0.1:8082",  # ← ADD THIS
-    "http://127.0.0.1:19006",
-    "http://127.0.0.1:3000",
+        "http://localhost:8081",
+        "http://localhost:8082",
+        "http://localhost:19006",
+        "http://localhost:3000",
+        "http://127.0.0.1:8081",
+        "http://127.0.0.1:8082",
+        "http://127.0.0.1:19006",
+        "http://127.0.0.1:3000",
     ]
 
     # Prompts

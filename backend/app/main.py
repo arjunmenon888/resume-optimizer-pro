@@ -18,12 +18,12 @@ app = FastAPI(
     redoc_url="/api/redoc",
 )
 
-# CORS Middleware
+# CORS Middleware — must be added before routes
 app.add_middleware(
     CORSMiddleware,
     allow_origins=config.FRONTEND_URLS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -37,10 +37,6 @@ app.include_router(download.router, prefix="/api", tags=["download"])
 
 # Create uploads directory if it doesn't exist
 os.makedirs(config.UPLOAD_DIR, exist_ok=True)
-
-@app.get("/api/test-400")
-async def test_400():
-    raise HTTPException(status_code=400, detail="test error")
 
 if __name__ == "__main__":
     import uvicorn
