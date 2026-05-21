@@ -15,18 +15,16 @@ export const apiService = {
   getOllamaModels: () => api.get('/models/ollama'),
 
   // Extract
+  extractResume: (file: any) => {
+    const formData = new FormData();
+    formData.append('file', { uri: file.uri, type: file.type || 'application/octet-stream', name: file.name || 'file' } as any);
+    return api.post('/extract/resume', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  },
+
   extractJobDescription: (file: any) => {
     const formData = new FormData();
-    formData.append('file', {
-      uri: file.uri,
-      type: file.type || 'image/jpeg',
-      name: file.name || 'file',
-    } as any);
-    return api.post('/extract/job-description', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    formData.append('file', { uri: file.uri, type: file.type || 'application/octet-stream', name: file.name || 'file' } as any);
+    return api.post('/extract/job-description', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 
   // Optimize
