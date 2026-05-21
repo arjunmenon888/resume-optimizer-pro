@@ -15,16 +15,30 @@ export const apiService = {
   getOllamaModels: () => api.get('/models/ollama'),
 
   // Extract
+  // file can be a browser File/Blob (web) or { uri, type, name } descriptor (native).
+  // Do NOT set Content-Type manually — axios must generate the multipart boundary itself.
   extractResume: (file: any) => {
     const formData = new FormData();
-    formData.append('file', { uri: file.uri, type: file.type || 'application/octet-stream', name: file.name || 'file' } as any);
-    return api.post('/extract/resume', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    if (typeof File !== 'undefined' && file instanceof File) {
+      formData.append('file', file, file.name);
+    } else if (typeof Blob !== 'undefined' && file instanceof Blob) {
+      formData.append('file', file, 'resume');
+    } else {
+      formData.append('file', file as any);
+    }
+    return api.post('/extract/resume', formData);
   },
 
   extractJobDescription: (file: any) => {
     const formData = new FormData();
-    formData.append('file', { uri: file.uri, type: file.type || 'application/octet-stream', name: file.name || 'file' } as any);
-    return api.post('/extract/job-description', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    if (typeof File !== 'undefined' && file instanceof File) {
+      formData.append('file', file, file.name);
+    } else if (typeof Blob !== 'undefined' && file instanceof Blob) {
+      formData.append('file', file, 'job-description');
+    } else {
+      formData.append('file', file as any);
+    }
+    return api.post('/extract/job-description', formData);
   },
 
   // Optimize

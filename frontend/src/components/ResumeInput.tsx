@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  Alert, ActivityIndicator,
+  Alert, ActivityIndicator, Platform,
 } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { apiService } from '../services/api';
@@ -35,15 +35,17 @@ export default function ResumeInput({ value, onChange }: ResumeInputProps) {
       });
       if (result.canceled || !result.assets?.[0]) return;
 
-      const file = result.assets[0];
-      const response = await apiService.extractResume({
-        uri: file.uri,
-        type: file.mimeType ?? 'application/octet-stream',
-        name: file.name ?? 'file',
-      });
+      const asset = result.assets[0];
+      // On web, asset.file is the real browser File object.
+      // On native, pass the { uri, type, name } descriptor that RN's FormData understands.
+      const filePayload = Platform.OS === 'web' && (asset as any).file
+        ? (asset as any).file
+        : { uri: asset.uri, type: asset.mimeType ?? 'application/octet-stream', name: asset.name ?? 'file' };
+
+      const response = await apiService.extractResume(filePayload);
 
       onChange(response.data.extracted_text);
-      setFileName(file.name ?? '');
+      setFileName(asset.name ?? '');
     } catch (err: any) {
       const detail = err?.response?.data?.detail;
       Alert.alert('Upload Error', detail ?? 'Could not extract text. Please paste your resume manually.');
