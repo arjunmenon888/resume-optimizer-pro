@@ -39,16 +39,10 @@ async def generate_resume(request: GenerateRequest):
     if not request.optimized_resume and not request.resume_data:
         raise HTTPException(status_code=400, detail="Optimized resume or resume data required")
 
-    resume_data = request.resume_data.dict() if request.resume_data else {
-        "name": "Optimized Resume",
-        "email": "",
-        "phone": "",
-        "location": "",
-        "summary": request.optimized_resume[:500] if request.optimized_resume else "",
-        "experience": [],
-        "education": [],
-        "skills": [],
-    }
+    if request.resume_data:
+        resume_data = request.resume_data.dict()
+    else:
+        resume_data = document_service.parse_resume_text(request.optimized_resume)
 
     try:
         doc = document_service.generate_ats_resume(resume_data)
