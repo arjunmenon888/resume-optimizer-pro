@@ -1,0 +1,51 @@
+# ──────────────────────────────
+#  Python / Backend
+# ──────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.env
+!.env.example
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+
+# Uploads (generated Word files)
+backend/app/uploads/*.docx
+backend/uploads/
+
+# ──────────────────────────────
+#  Node / Frontend
+# ──────────────────────────────
+node_modules/
+.expo/
+.expo-shared/
+dist/
+web-build/
+frontend/.env
+!frontend/.env.example
+
+# Expo EAS
+*.ipa
+*.apk
+*.aab
+
+# Test scripts (Playwright automation)
+frontend/test_ui.mjs
+frontend/test_full_flow.mjs
+
+# ──────────────────────────────
+#  OS / Editor
+# ──────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
