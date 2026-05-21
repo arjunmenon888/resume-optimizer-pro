@@ -30,11 +30,12 @@ class Config:
 
     # CORS
     FRONTEND_URLS = [
-        "http://localhost:19006",  # Expo web (default port)
-        "http://localhost:8081",   # Expo web (alternate port)
-        "http://localhost:3000",   # React dev
-        "http://127.0.0.1:19006",
-        "http://127.0.0.1:8081",
+    "http://localhost:8082",  # ← ADD THIS (Expo web)
+    "http://localhost:19006",
+    "http://localhost:3000",
+    "http://127.0.0.1:8082",  # ← ADD THIS
+    "http://127.0.0.1:19006",
+    "http://127.0.0.1:3000",
     ]
 
     # Prompts
