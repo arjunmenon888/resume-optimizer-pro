@@ -1,5 +1,7 @@
-import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 import { colors, spacing, fontSize, borderRadius } from '../styles/theme';
 
 interface ResumeInputProps {
@@ -8,9 +10,35 @@ interface ResumeInputProps {
 }
 
 export default function ResumeInput({ value, onChange }: ResumeInputProps) {
+  const [loading, setLoading] = useState(false);
+
+  const handleFilePick = async () => {
+    setLoading(true);
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['text/plain', 'text/*'],
+        copyToCacheDirectory: true,
+      });
+      if (result.canceled || !result.assets?.[0]) return;
+      const content = await FileSystem.readAsStringAsync(result.assets[0].uri);
+      onChange(content);
+    } catch {
+      Alert.alert('Error', 'Could not read file. Please paste your resume as text.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Your Resume</Text>
+      <View style={styles.labelRow}>
+        <Text style={styles.label}>Your Resume</Text>
+        <TouchableOpacity style={styles.uploadBtn} onPress={handleFilePick} disabled={loading}>
+          {loading
+            ? <ActivityIndicator size="small" color={colors.primary} />
+            : <Text style={styles.uploadBtnText}>Upload .txt</Text>}
+        </TouchableOpacity>
+      </View>
       <TextInput
         style={styles.input}
         multiline
@@ -27,7 +55,13 @@ export default function ResumeInput({ value, onChange }: ResumeInputProps) {
 
 const styles = StyleSheet.create({
   container: { marginBottom: spacing.md },
-  label: { fontSize: fontSize.sm, fontWeight: '600', marginBottom: spacing.xs, color: colors.dark },
+  labelRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.xs },
+  label: { fontSize: fontSize.sm, fontWeight: '600', color: colors.dark },
+  uploadBtn: {
+    borderWidth: 1, borderColor: colors.primary, borderRadius: borderRadius.sm,
+    paddingHorizontal: spacing.sm, paddingVertical: 4,
+  },
+  uploadBtnText: { fontSize: fontSize.xs, color: colors.primary, fontWeight: '600' },
   input: {
     borderWidth: 1,
     borderColor: colors.gray[300],
